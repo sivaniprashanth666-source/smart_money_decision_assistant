@@ -2,7 +2,7 @@
 
 A simple web app that helps people make better everyday money decisions. It runs fully in the browser, with no backend and no sign-up. Data stays on the user's device.
 
-**Live demo:** _add your GitHub Pages link here_
+**Live demo: https://sivaniprashanth666-source.github.io/smart_money_decision_assistant/
 
 ## Features
 
