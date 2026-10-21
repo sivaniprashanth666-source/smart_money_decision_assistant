@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Smart Money Decision Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e9efec;--card:#fbfdfc;--ink:#10302f;--mute:#5b7270;--line:#cdd9d5;--brand:#0f5c4d;--brandtxt:#fff;--gold:#e8a317;--ok:#1b7f4b;--warn:#b8780a;--bad:#c0392b;--okbg:#dcf1e4;--warnbg:#fbeccb;--badbg:#f8dcd7;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1917;--card:#13262a;--ink:#e6f1ee;--mute:#92aaa6;--line:#25403f;--brand:#3fbf9f;--brandtxt:#06231c;--gold:#f0b43a;--ok:#5fd39a;--warn:#f0b43a;--bad:#ff8a78;--okbg:#14382b;--warnbg:#3b2f10;--badbg:#401e1a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c1917;--card:#13262a;--ink:#e6f1ee;--mute:#92aaa6;--line:#25403f;--brand:#3fbf9f;--brandtxt:#06231c;--gold:#f0b43a;--ok:#5fd39a;--warn:#f0b43a;--bad:#ff8a78;--okbg:#14382b;--warnbg:#3b2f10;--badbg:#401e1a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 'Instrument Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Bricolage Grotesque','Instrument Sans',system-ui,sans-serif;line-height:1.1;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding:28px 18px 60px}
+header h1{font-size:clamp(2rem,5.5vw,3.4rem);font-weight:800;letter-spacing:-.02em;max-width:16ch}
+header p{color:var(--mute);max-width:52ch;margin:12px 0 26px}
+.app{display:grid;grid-template-columns:250px 1fr;gap:22px;align-items:start}
+nav{display:flex;flex-direction:column;gap:8px;position:sticky;top:12px}
+nav button{text-align:left;font:inherit;font-weight:500;padding:12px 14px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;cursor:pointer}
+nav button[aria-selected=true]{background:var(--brand);color:var(--brandtxt);border-color:var(--brand)}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+section.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
+.panel h2{font-size:1.7rem;margin-bottom:4px}
+.sub{color:var(--mute);margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+label{display:flex;flex-direction:column;gap:4px;font-size:.88rem;color:var(--mute);font-weight:500}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:9px 10px;width:100%}
+.btn{font:inherit;font-weight:600;background:var(--brand);color:var(--brandtxt);border:0;border-radius:8px;padding:10px 16px;cursor:pointer;align-self:end}
+.btn.ghost{background:transparent;color:var(--mute);border:1px solid var(--line);padding:6px 10px;font-size:.85rem}
+.out{margin-top:20px}
+.big{font:800 clamp(2rem,6vw,3rem)/1 'Bricolage Grotesque',system-ui,sans-serif;letter-spacing:-.02em}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0}
+.stat{border-left:4px solid var(--gold);padding:2px 0 2px 12px}
+.stat b{display:block;font:800 1.5rem 'Bricolage Grotesque',system-ui,sans-serif}
+.stat span{color:var(--mute);font-size:.85rem}
+.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-weight:600;font-size:.85rem}
+.ok{background:var(--okbg);color:var(--ok)}.warn{background:var(--warnbg);color:var(--warn)}.bad{background:var(--badbg);color:var(--bad)}
+.verdict{border-radius:12px;padding:16px 18px;margin-top:6px}
+.verdict h3{font-size:1.5rem;margin-bottom:4px}
+.row{display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.row:last-child{border:0}
+.row small{color:var(--mute)}
+.bar{grid-column:1/-1;height:8px;background:var(--bg);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brand);border-radius:9px}
+.alert{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 14px;margin:8px 0;font-weight:500}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:430px}
+td,th{padding:6px 6px 6px 0;text-align:left;font-weight:500;font-size:.9rem;color:var(--mute)}
+td input{padding:7px 8px}
+.empty{color:var(--mute);padding:14px 0}
+.note{font-size:.8rem;color:var(--mute);margin-top:30px;max-width:60ch}
+@media(max-width:760px){.app{grid-template-columns:1fr}nav{flex-direction:row;overflow-x:auto;position:static;padding-bottom:4px}nav button{white-space:nowrap}}
+@media(prefers-reduced-motion:no-preference){.bar i{transition:width .4s}}
+</style></head>
+<body><div class="wrap">
+<header><h1>Know where your money goes before it goes.</h1>
+<p>Five quick checks for everyday money decisions: purchases, subscriptions, monthly spending, EMIs and the real cost of owning things. Everything stays in your browser.</p></header>
+<div class="app">
+<nav role="tablist" id="nav"></nav>
+<main id="main"></main>
+</div>
+<p class="note">A simple budgeting aid, not financial advice. Numbers are estimates based only on what you enter.</p>
+</div>
+<script>
+const $=id=>document.getElementById(id),n=id=>parseFloat($(id).value)||0;
+const f=v=>'₹'+new Intl.NumberFormat('en-IN',{maximumFractionDigits:0}).format(Math.round(v));
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const inp=(id,l,v,t='number')=>`<label>${l}<input id="${id}" type="${t}" value="${v}" min="0" inputmode="decimal"></label>`;
+let subs=[];try{subs=JSON.parse(localStorage.getItem('sm-subs')||'[]')}catch(e){}
+const save=()=>{try{localStorage.setItem('sm-subs',JSON.stringify(subs))}catch(e){}};
+const tabs=[['afford','Can I afford this?'],['subs','How much am I spending on subscriptions?'],['spend','Why am I running out of money?'],['emi','How much will this EMI really cost?'],['own','What does it cost to own this?']];
+const P={};
+P.afford=`<h2>Can I afford this?</h2><p class="sub">Compare a purchase with the money you have left after expenses.</p>
+<div class="grid">${inp('a1','Product price (₹)',8000)}${inp('a2','Monthly income (₹)',25000)}${inp('a3','Monthly expenses (₹)',17000)}</div><div class="out" id="aout"></div>`;
+P.subs=`<h2>Subscription leak detector</h2><p class="sub">Add everything that renews on its own. Tick the ones you’d cancel.</p>
+<div class="grid">${inp('s1','Name','','text')}${inp('s2','Price (₹)','')}<label>Billed<select id="s3"><option value="m">Monthly</option><option value="y">Yearly</option></select></label>${inp('s4','Next renewal',new Date(Date.now()+864e5*5).toISOString().slice(0,10),'date')}<button class="btn" id="sadd">Add subscription</button></div><div class="out" id="sout"></div>`;
+const cats=[['Food',4800,3636],['Shopping',3200,3000],['Transport',2100,2000],['Entertainment',1500,1400],['Bills',3000,3000]];
+P.spend=`<h2>Where is my money going?</h2><p class="sub">Enter this month and last month. Edit the example numbers.</p>
+<div class="grid">${inp('p0','Monthly income (₹)',20000)}</div>
+<div class="scroll"><table><tr><th>Category</th><th>This month</th><th>Last month</th></tr>${cats.map((c,i)=>`<tr><td>${c[0]}</td><td><input id="pt${i}" type="number" value="${c[1]}" min="0"></td><td><input id="pl${i}" type="number" value="${c[2]}" min="0"></td></tr>`).join('')}</table></div><div class="out" id="pout"></div>`;
+P.emi=`<h2>EMI reality checker</h2><p class="sub">The monthly figure looks small. The total is what you pay.</p>
+<div class="grid">${inp('e1','Item price (₹)',30000)}${inp('e2','Down payment (₹)',0)}${inp('e3','EMI per month (₹)',1999)}${inp('e4','Months',24)}</div><div class="out" id="eout"></div>`;
+P.own=`<h2>Hidden cost calculator</h2><p class="sub">Purchase price plus everything that follows it.</p>
+<div class="grid">${inp('o1','Purchase price (₹)',30000)}${inp('o2','One-time extras (₹)',2000)}${inp('o3','Yearly running costs (₹)',3600)}${inp('o4','Yearly maintenance (₹)',1500)}${inp('o5','Years you’ll keep it',3)}</div><div class="out" id="oout"></div>`;
+const R={};
+R.afford=()=>{const p=n('a1'),inc=n('a2'),ex=n('a3'),free=inc-ex;let c,t,m;
+ if(free<=0){c='bad';t='Unaffordable';m=`Your expenses already use all of your income, so there’s nothing left to pay for this.`}
+ else{const r=p/free,mo=Math.ceil(p/free);
+  if(r<=.5){c='ok';t='Comfortable';m=`This takes about ${Math.round(r*100)}% of one month’s spare money.`}
+  else if(r<=1){c='warn';t='Risky';m=`This uses ${Math.round(r*100)}% of a month’s spare money and leaves little room for surprises.`}
+  else{c='bad';t='Unaffordable right now';m=`It’s more than a month of spare money. Saving ${f(free)} a month would take ${mo} months.`}}
+ $('aout').innerHTML=`<div class="stats"><div class="stat"><b>${f(free)}</b><span>Spare money per month</span></div><div class="stat"><b>${f(p)}</b><span>Price</span></div></div><div class="verdict ${c}"><h3>${t}</h3><div>${m}</div></div>`};
+R.subs=()=>{const mo=s=>s.c=='y'?s.p/12:s.p,tot=subs.reduce((a,s)=>a+mo(s),0),cut=subs.filter(s=>s.x).reduce((a,s)=>a+mo(s)*12,0);
+ const nxt=s=>{let d=new Date(s.d+'T00:00');const t=new Date();t.setHours(0,0,0,0);let g=0;while(d<t&&g++<600){s.c=='y'?d.setFullYear(d.getFullYear()+1):d.setMonth(d.getMonth()+1)}return Math.round((d-t)/864e5)};
+ const soon=subs.filter(s=>nxt(s)<=7);
+ $('sout').innerHTML=`<div class="stats"><div class="stat"><b>${f(tot)}</b><span>Per month</span></div><div class="stat"><b>${f(tot*12)}</b><span>Per year</span></div><div class="stat"><b>${f(cut)}</b><span>Yearly saving if you cancel the ticked ones</span></div></div>`+
+ (cut?`<div class="verdict ok"><h3>You could save ${f(cut)}/year</h3>by cancelling the subscriptions you ticked.</div>`:'')+
+ soon.map(s=>`<div class="alert">${esc(s.n)} renews ${nxt(s)==0?'today':'in '+nxt(s)+' day'+(nxt(s)>1?'s':'')} (${f(s.p)}).</div>`).join('')+
+ (subs.length?subs.map((s,i)=>`<div class="row"><div><b>${esc(s.n)}</b> <small>${f(s.p)} ${s.c=='y'?'yearly':'monthly'} · ${f(mo(s))}/month · renews in ${nxt(s)} days</small></div><div><label style="flex-direction:row;align-items:center;gap:6px"><input type="checkbox" style="width:auto" data-x="${i}" ${s.x?'checked':''}>Cancel</label> <button class="btn ghost" data-del="${i}">Remove</button></div></div>`).join(''):'<div class="empty">No subscriptions yet. Add the first one above.</div>')};
+R.spend=()=>{const inc=n('p0');let tot=0,h='',al='';
+ cats.forEach((c,i)=>{const a=n('pt'+i),l=n('pl'+i),ch=l>0?(a-l)/l*100:0;tot+=a;
+  if(ch>=20)al+=`<div class="alert">⚠️ Your ${c[0].toLowerCase()} spending rose ${Math.round(ch)}% this month.</div>`;
+  h+=`<div class="row"><div><b>${c[0]}</b> <small>${inc?Math.round(a/inc*100):0}% of income</small></div><div><b>${f(a)}</b> <span class="tag ${ch>=20?'bad':ch<=-10?'ok':'warn'}">${ch>0?'+':''}${Math.round(ch)}%</span></div><div class="bar"><i style="width:${inc?Math.min(100,a/inc*100):0}%"></i></div></div>`});
+ const left=inc-tot,tips=[];
+ if(left<0)tips.push(`You’re spending ${f(-left)} more than you earn. Start with the category that grew most.`);
+ else if(inc&&left<inc*.1)tips.push(`You keep under 10% of income. Aim for ${f(inc*.1)} a month and move it to savings first.`);
+ else if(inc)tips.push(`You keep ${f(left)} a month. Moving it to savings on payday makes it harder to spend.`);
+ cats.forEach((c,i)=>{if(inc&&n('pt'+i)>inc*.3&&c[0]!='Bills')tips.push(`${c[0]} is over 30% of income. A small cap could free up ${f(n('pt'+i)-inc*.3)}.`)});
+ $('pout').innerHTML=`<div class="stats"><div class="stat"><b>${f(tot)}</b><span>Spent this month</span></div><div class="stat"><b style="color:var(--${left<0?'bad':'ok'})">${f(left)}</b><span>${left<0?'Shortfall':'Left over'}</span></div></div>${al}<div>${h}</div><h3 style="margin:18px 0 6px">Suggestions</h3>${tips.map(t=>`<p style="margin:4px 0">• ${t}</p>`).join('')}`};
+R.emi=()=>{const pr=n('e1'),dp=n('e2'),e=n('e3'),m=n('e4'),fin=pr-dp,paid=e*m+dp,extra=paid-pr;let ap=0;
+ if(fin>0&&e*m>fin){let lo=0,hi=.2;for(let i=0;i<60;i++){const r=(lo+hi)/2,v=fin*r/(1-Math.pow(1+r,-m));v<e?lo=r:hi=r}ap=lo*1200}
+ const c=extra<=0?'ok':extra/pr>.15?'bad':'warn';
+ $('eout').innerHTML=`<div class="big">${f(e)} × ${m} = ${f(e*m)}</div><div class="stats"><div class="stat"><b>${f(paid)}</b><span>Total you pay, down payment included</span></div><div class="stat"><b>${f(Math.max(extra,0))}</b><span>Extra over the ${f(pr)} price</span></div><div class="stat"><b>${ap?ap.toFixed(1)+'%':'0%'}</b><span>Approx. yearly interest rate</span></div></div><div class="verdict ${c}"><h3>${extra<=0?'No extra cost':'You pay '+Math.round(extra/pr*100)+'% more than the price'}</h3>${extra>0?'Check whether the shop calls it “no-cost EMI”: the extra is often built into the price or fees.':'This looks like a true zero-interest plan. Check for processing fees.'}</div>`};
+R.own=()=>{const b=n('o1'),x=n('o2'),y=n('o5'),r=n('o3')+n('o4'),t=b+x+r*y,h=t-b;
+ $('oout').innerHTML=`<div class="big">${f(t)}</div><p class="sub">Real cost over ${y} year${y==1?'':'s'}, against ${f(b)} on the tag.</p><div class="stats"><div class="stat"><b>${f(h)}</b><span>Hidden on top of the price</span></div><div class="stat"><b>${b?Math.round(h/b*100):0}%</b><span>More than the sticker price</span></div><div class="stat"><b>${y?f(t/(y*12)):'–'}</b><span>Per month of ownership</span></div></div>`};
+function show(k){document.querySelectorAll('#nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.k==k));
+ $('main').innerHTML=`<section class="panel" role="tabpanel">${P[k]}</section>`;R[k]();
+ $('main').querySelectorAll('input:not([type=checkbox]),select').forEach(i=>i.oninput=()=>{if(k!='subs')R[k]()});
+ if(k=='subs'){$('sadd').onclick=()=>{const nm=$('s1').value.trim(),p=n('s2');if(!nm||!p){$('s1').focus();return}subs.push({n:nm,p,c:$('s3').value,d:$('s4').value,x:false});save();$('s1').value='';$('s2').value='';R.subs()};
+  $('sout').onclick=e=>{const t=e.target;if(t.dataset.del!==undefined){subs.splice(+t.dataset.del,1)}else if(t.dataset.x!==undefined){subs[+t.dataset.x].x=t.checked}else return;save();R.subs()}}}
+$('nav').innerHTML=tabs.map(t=>`<button role="tab" data-k="${t[0]}">${t[1]}</button>`).join('');
+$('nav').onclick=e=>{const k=e.target.dataset.k;if(k)show(k)};
+show('afford');
+</script></body></html>
